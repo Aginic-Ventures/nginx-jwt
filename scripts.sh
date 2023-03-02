@@ -78,10 +78,10 @@ rebuild_test_runner() {
 
 test() {
 	printf "${BLUE}  Running tests...${NC}"
-	docker compose -f ./test/docker-compose-test.yml up --no-start
+	docker-compose -f ./test/docker-compose-test.yml up --no-start
 	docker start ${CONTAINER_NAME_PREFIX}
 	docker start -a ${CONTAINER_NAME_PREFIX}-runner
-	docker compose -f ./test/docker-compose-test.yml down
+	docker-compose -f ./test/docker-compose-test.yml down
 }
 
 for fn in $@; do

@@ -39,8 +39,6 @@ build_nginx() {
 	else
 		printf "${GREEN}✓ Successfully built NGINX module ${NC}"
 	fi
-
-	docker rmi -f $(docker images --filter=label=stage=builder --quiet)
 }
 
 rebuild_nginx() {

@@ -1,3 +1,5 @@
+[![ci](https://github.com/Aginic-Ventures/nginx-jwt/actions/workflows/ci.yml/badge.svg)](https://github.com/Aginic-Ventures/nginx-jwt/actions/workflows/ci.yml)
+
 # Intro
 
 This is an NGINX module to check for a valid JWT and proxy to an upstream server or redirect to a login page.
@@ -34,8 +36,9 @@ You can run multiple commands in sequence by separating them with a space, e.g.:
 ```
 
 The image produced with `./scripts.sh build_nginx` only differs from the official NGINX image in two ways:
- - the JWT module itself, and
- - the `nginx.conf` file is overwritten with our own.
+
+- the JWT module itself, and
+- the `nginx.conf` file is overwritten with our own.
 
 The tests use a customized NGINX image, distinct from the main image, as well as a test runner image. By running `./scripts.sh test`, the two test containers will be stood up via Docker compose, then they'll be started, and the tests will run. At the end of the test run, both containers will be automatically stopped and destroyed. See below to learn how to trace test failures across runs.
 
@@ -56,7 +59,7 @@ LOG_DRIVER=journald ./scripts.sh rebuild_test_runner
 journalctl -eu docker CONTAINER_NAME=jwt-nginx-test
 ```
 
-Now you'll be able to see logs from previous test runs. The best way to make use of this  is to open two terminals, one where you run the tests, and one where you follow the logs:
+Now you'll be able to see logs from previous test runs. The best way to make use of this is to open two terminals, one where you run the tests, and one where you follow the logs:
 
 ```shell
 # terminal 1
@@ -71,20 +74,20 @@ journalctl -fu docker CONTAINER_NAME=jwt-nginx-test
 This module depends on the [JWT C Library](https://github.com/benmcollins/libjwt). Transitively, that library depends on a JSON Parser called [Jansson](https://github.com/akheron/jansson) as well as the OpenSSL library.
 
 ## NGINX Directives
+
 This module requires several new `nginx.conf` directives, which can be specified at the `http`, `server`, or `location` levels.
 
-| Directive                  | Description                                                                                                        |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `auth_jwt_key`             | The key to use to decode/verify the JWT -- see below.                                                              |
-| `auth_jwt_redirect`        | Set to "on" to redirect to `auth_jwt_loginurl` if authentication fails.                                            |
-| `auth_jwt_loginurl`        | The URL to redirect to if `auth_jwt_redirect` is enabled and authentication fails.                                 |
-| `auth_jwt_enabled`         | Set to "on" to enable JWT checking.                                                                                |
-| `auth_jwt_algorithm`       | The algorithm to use. One of: HS256, HS384, HS512, RS256, RS384, RS512                                             |
-| `auth_jwt_extract_sub`     | Set to "on" to extract the `sub` claim (e.g. user id) from the JWT and into the `x-userid` header on the response. |
-| `auth_jwt_validate_email`  | Set to "on" to extract the `emailAddress` claim from the JWT and into the `x-email` header on the response.        |
-| `auth_jwt_use_keyfile`     | Set to "on" to read the key from a file rather than from the `auth_jwt_key` directive.                             |
-| `auth_jwt_keyfile_path`    | Set to the path from which the key should be read when `auth_jwt_use_keyfile` is enabled.                          |
-
+| Directive                 | Description                                                                                                        |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `auth_jwt_key`            | The key to use to decode/verify the JWT -- see below.                                                              |
+| `auth_jwt_redirect`       | Set to "on" to redirect to `auth_jwt_loginurl` if authentication fails.                                            |
+| `auth_jwt_loginurl`       | The URL to redirect to if `auth_jwt_redirect` is enabled and authentication fails.                                 |
+| `auth_jwt_enabled`        | Set to "on" to enable JWT checking.                                                                                |
+| `auth_jwt_algorithm`      | The algorithm to use. One of: HS256, HS384, HS512, RS256, RS384, RS512                                             |
+| `auth_jwt_extract_sub`    | Set to "on" to extract the `sub` claim (e.g. user id) from the JWT and into the `x-userid` header on the response. |
+| `auth_jwt_validate_email` | Set to "on" to extract the `emailAddress` claim from the JWT and into the `x-email` header on the response.        |
+| `auth_jwt_use_keyfile`    | Set to "on" to read the key from a file rather than from the `auth_jwt_key` directive.                             |
+| `auth_jwt_keyfile_path`   | Set to the path from which the key should be read when `auth_jwt_use_keyfile` is enabled.                          |
 
 The default algorithm is `HS256`, for symmetric key validation. When using one of the `HS*` algorithms, the value for `auth_jwt_key` should be specified in binhex format. It is recommended to use at least 256 bits of data (32 pairs of hex characters or 64 characters in total) as in the example above. Note that using more than 512 bits will not increase the security. For key guidelines please see [NIST Special Publication 800-107 Recommendation for Applications Using Approved Hash Algorithms](https://csrc.nist.gov/publications/detail/sp/800-107/rev-1/final), Section 5.3.2 The HMAC Key.
 
@@ -125,8 +128,8 @@ By default the authorization header is used to provide a JWT for validation. How
 auth_jwt_validation_type COOKIE=jwt;
 ```
 
-By default, the module will attempt to extract the `sub` claim (e.g. the user's id) from the JWT. If successful, the 
-value will be set in the `x-userid` HTTP header. An error will be logged if this option is enabled and the JWT does not 
+By default, the module will attempt to extract the `sub` claim (e.g. the user's id) from the JWT. If successful, the
+value will be set in the `x-userid` HTTP header. An error will be logged if this option is enabled and the JWT does not
 contain the `sub` claim. You may disable this option as follows:
 
 ```
@@ -135,7 +138,7 @@ auth_jwt_extract_sub off
 
 By default, the module will attempt to validate the email address field of the JWT, then set the x-email header of the
 session, and will log an error if it isn't found. To disable this behavior, for instance if you are using a different
-user identifier property such as `sub`, set `auth_jwt_validate_email` to the value `off`. _Note that this flag may be 
+user identifier property such as `sub`, set `auth_jwt_validate_email` to the value `off`. _Note that this flag may be
 renamed to `auth_jwt_extract_email` in a future release._ You may disable this option as follows:
 
 ```
@@ -153,24 +156,24 @@ If you'd like to contribute to this repository, please first initiate the Git ho
 
 ```json
 {
-    "configurations": [
-        {
-            "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "~/Projects/third-party/nginx/objs/**",
-                "~/Projects/third-party/nginx/src/**",
-                "~/Projects/third-party/libjwt/include/**",
-                "~/Projects/third-party/jansson/src/**"
-            ],
-            "defines": [],
-            "compilerPath": "/usr/bin/clang",
-            "cStandard": "c17",
-            "cppStandard": "c++14",
-            "intelliSenseMode": "linux-clang-x64"
-        }
-    ],
-    "version": 4
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "~/Projects/third-party/nginx/objs/**",
+        "~/Projects/third-party/nginx/src/**",
+        "~/Projects/third-party/libjwt/include/**",
+        "~/Projects/third-party/jansson/src/**"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/clang",
+      "cStandard": "c17",
+      "cppStandard": "c++14",
+      "intelliSenseMode": "linux-clang-x64"
+    }
+  ],
+  "version": 4
 }
 ```
 

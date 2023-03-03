@@ -7,7 +7,7 @@ on:
 env:
   REGISTRY: ghcr.io
   ORG_NAME: aginic-ventures
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: nginx-jwt
   NGINX_VERSION: 1.22.0
 
 jobs:
@@ -47,5 +47,5 @@ jobs:
             NGINX_VERSION=${{ env.NGINX_VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: ${{ env.REGISTRY }}/${{ env.ORG_NAME}}/${{ env.IMAGE_NAME }}:${{ env.NGINX_VERSION }}
+          tags: ${{ env.REGISTRY }}/${{ env.ORG_NAME }}/${{ env.IMAGE_NAME }}:${{ env.NGINX_VERSION }}
           push: true

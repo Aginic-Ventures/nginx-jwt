@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  ORG_NAME: aginic-ventures
+  ORG_NAME: eduvidd
   IMAGE_NAME: nginx-jwt
   NGINX_VERSION: 1.22.0
 
